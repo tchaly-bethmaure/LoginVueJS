@@ -1,0 +1,63 @@
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/fontello.css" rel="stylesheet">
+<script src="js/md5.min.js"></script>
+<meta charset="UTF-8">
+
+<div id="app" class="">
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-4">
+			  <div class="form-group">
+			    <label>Mail</label>
+			    <input type="text" class="form-control" id="mail" placeholder="Entrez votre adresse mail" v-model="valeur_mail" />
+			  </div>
+			  <div class="form-group">
+			    <label>Mot de passe</label>
+			    <input type="password" class="form-control" id="passe" placeholder="Votre mot de passe" v-model="valeur_mdp" />
+			  </div>
+			  <button type="submit" class="btn btn-default" @click="identification">Entrer</button>
+			  <br />
+			<p class="bg-danger" v-if="identification_erreur">Mauvais identifiant ou mot de passe ! <i class="icon-cancel" @click="close_identification_erreur" style="float:right;cursor:pointer;"></i></p>
+			<p class="bg-danger" v-if="mail_empty_erreur">Mail non remplif ! <i class="icon-cancel" @click="close_mail_empty_erreur" style="float:right;cursor:pointer;"></i></p>
+		</div>
+		<div class="col-md-4"></div>
+	</div>
+</div>
+
+<script src="js/vue.js"></script>
+<script type="text/javascript">
+	new Vue({
+		el: '#app',
+		data: {
+			//message: 'hello'
+			identification_erreur: false,
+			mail_empty_erreur: false,
+			valeur_mail: '',
+			valeur_mdp: ''
+		},
+		methods: {
+			close_identification_erreur: function(){
+				this.identification_erreur = false;
+			},
+			close_mail_empty_erreur: function(){
+				this.mail_empty_erreur = false;
+			},
+			identification: function(){
+				if(!this.valeur_mail){
+					this.mail_empty_erreur = true;
+				}
+				else{
+					// trop vieille école
+					var req = new XMLHttpRequest();
+					req.open('GET', 'http://localhost:8080/identification/mail/'+this.valeur_mail+'/mdp/'+md5(this.valeur_mdp), false);
+					req.send(null);
+					if(req.status == 0)
+						console.log(req);
+					else
+					  alert("Une erreur est survenue côté serveur.");
+				}
+			}
+
+		}
+	})
+</script>
